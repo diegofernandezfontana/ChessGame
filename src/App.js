@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
-
+import Board from './Containers/Board'
 
 function App() {
   return (
     <Fragment>
-      <h1>This is the board</h1>
+      <Board></Board>
     </Fragment>
   );
 }
