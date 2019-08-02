@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { Wrapper } from "./Styles";
+import { Wrapper } from './Styles';
 
 function Square(props) {
   const { children, backgroundColor } = props;
