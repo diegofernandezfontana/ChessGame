@@ -11,6 +11,9 @@
     "styled-components": "4.3.2"
   },
   "scripts": {
+    "format": "npm run prettier -- --write",
+    "prettier": "prettier \"**/*.{js,jsx,css,json}\"",
+    "validate": "npm run lint && npm run prettier -- --list-different",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
