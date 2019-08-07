@@ -6,27 +6,36 @@ import { Column } from './styles';
 import Pawn from '../../Components/Pieces/Pawn';
 
 function MainBoard() {
+  const [newBoard, setNewBoard] = useState(defaultPosition);
   const board = defaultPosition;
   const [activePiece, setActivePiece] = useState({});
 
-  useEffect(() => {}, [activePiece]);
+  useEffect(() => {
+    console.log(activePiece, 'ACTIVE PIEZE UseEFFECT');
+    if (activePiece && activePiece.color) {
+      const pieceCanMoveTo = activePiece.availableMoves();
+      renderPosibleMoves(pieceCanMoveTo);
+    }
+  }, [board, activePiece]);
 
   function initializeBoard() {
     return renderAllRows();
   }
 
-  function handleSetActivePiece(e) {
-    console.log(e.target.values, 'E');
-    setActivePiece(e);
-  }
+  const handleSetActivePiece = piece => {
+    console.log('DISPARO ESTO');
+    setActivePiece(piece);
+  };
 
-  function getAvailableMoves(e) {
-    // consol
-    // console.log(e, 'e');
-    // console.log('TENGO LOS MOVIMIENTOS');
+  function renderPosibleMoves(arrayOfMoves) {
+    arrayOfMoves.forEach(square => {
+      board[square.x][square.y] = 'X';
+    });
   }
 
   function renderAllRows() {
+    //    console.log(board);
+    console.log('ENTRO AL RENDER ALL ROWS');
     return board.map((row, rowIndex) => {
       return <Column>{renderRow({ rowIndex })}</Column>;
     });
@@ -39,12 +48,13 @@ function MainBoard() {
   }
 
   function renderSquare({ x, y, piece }) {
-    return <Square backgroundColor={setSquareColor({ x, y })}> {renderPiece({ piece, x, y })} </Square>;
+    return <Square backgroundColor={setSquareColor({ x, y })}>{renderPiece({ piece, x, y })}</Square>;
   }
 
   function renderPiece({ x, y, piece }) {
+    //    console.log(piece, 'PIECE');
     if (piece === 'bP' || piece === 'wP') {
-      return <Pawn x={x} y={y} getAvailableMoves={getAvailableMoves} setActivePiece={handleSetActivePiece} />;
+      return <Pawn x={x} y={y} setActivePiece={handleSetActivePiece} color="white" board={board} />;
     }
     return piece;
   }
@@ -56,9 +66,9 @@ function MainBoard() {
 
     return 'white';
   }
-  console.log(activePiece);
 
-  return initializeBoard();
+  return newBoard;
+  //return initializeBoard();
 }
 
 export default MainBoard;
