@@ -1,12 +1,12 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 
 function Pawn(props) {
   const { x, y, color, setActivePiece, board } = props;
 
-  const selectPiece = () => () => {
+  function selectPiece() {
     const selected = { x, y, color, piece: 'pawn', availableMoves: getPosibleMoves };
     setActivePiece(selected);
-  };
+  }
 
   const getPosibleMoves = () => {
     const posibleMoves = [];
@@ -29,7 +29,7 @@ function Pawn(props) {
 
   function renderIcon() {
     return (
-      <button onClick={selectPiece()}>
+      <button onClick={selectPiece}>
         <img
           x={x}
           y={y}
