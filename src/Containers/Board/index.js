@@ -18,14 +18,22 @@ function MainBoard() {
     }
   }, [board[activePiece.x], board[activePiece.y]]);
 
+  useEffect(() => {
+    if (Object.keys(activePiece).length) {
+      const posibleMoves = activePiece.availableMoves();
+      renderPosibleMoves(posibleMoves);
+    }
+  }, [activePiece]);
+
   function renderPosibleMoves(posibleMoves) {
-    const newBoard = boardRef.current;
+    const newBoard = Object.assign([], boardRef.current);
     posibleMoves.forEach(square => {
       newBoard[square.x][square.y] = 'X';
     });
+
     setBoard(newBoard);
-    initializeBoard();
   }
+
   const handleSetActivePiece = piece => {
     piezaRef.current = activePiece;
     boardRef.current = board;
@@ -57,7 +65,7 @@ function MainBoard() {
       return <Pawn x={x} y={y} setActivePiece={handleSetActivePiece} color="white" board={board} />;
     }
     if (piece === 'X') {
-      return 'X';
+      return 'x';
     }
     return piece;
   }
