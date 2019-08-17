@@ -27,11 +27,23 @@ function MainBoard() {
 
   function renderPosibleMoves(posibleMoves) {
     const newBoard = Object.assign([], boardRef.current);
+    const clearedBoard = clearPosibleMoves(newBoard);
     posibleMoves.forEach(square => {
-      newBoard[square.x][square.y] = 'X';
+      clearedBoard[square.x][square.y] = 'X';
     });
 
-    setBoard(newBoard);
+    setBoard(clearedBoard);
+  }
+
+  function clearPosibleMoves(boardToClearX) {
+    return board.map((row, rowIndex) => {
+      return row.map((column, columnIndex) => {
+        if (column === 'X') {
+          return '';
+        }
+        return column;
+      });
+    });
   }
 
   const handleSetActivePiece = piece => {
@@ -74,7 +86,6 @@ function MainBoard() {
     if ((x + y) % 2) {
       return '#0c352c';
     }
-
     return 'white';
   }
 
