@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Square from '../../Components/Square';
 import { defaultPosition } from './intialPositions';
@@ -8,8 +8,6 @@ import Pawn from '../../Components/Pieces/Pawn';
 function MainBoard() {
   const [board, setBoard] = useState(defaultPosition);
   const [activePiece, setActivePiece] = useState({});
-  const piezaRef = useRef();
-  const boardRef = useRef();
 
   useEffect(() => {
     if (Object.keys(activePiece).length) {
@@ -26,7 +24,8 @@ function MainBoard() {
   }, [activePiece]);
 
   function renderPosibleMoves(posibleMoves) {
-    const newBoard = Object.assign([], boardRef.current);
+    const newBoard = Object.assign([], board);
+
     const clearedBoard = clearPosibleMoves(newBoard);
     posibleMoves.forEach(square => {
       clearedBoard[square.x][square.y] = 'X';
@@ -47,8 +46,6 @@ function MainBoard() {
   }
 
   const handleSetActivePiece = piece => {
-    piezaRef.current = activePiece;
-    boardRef.current = board;
     setActivePiece(piece);
   };
 
@@ -68,8 +65,25 @@ function MainBoard() {
     });
   }
 
+  const movePieceToPosibleMove = ({ x, y }) => () => {
+    const canPieveMoveToThisSquare = board[x][y] === 'X';
+    const clearedBoard = clearPosibleMoves();
+    const newBoard = Object.assign([], clearedBoard);
+    if (canPieveMoveToThisSquare) {
+      const { x: activePieceX, y: activePieceY } = activePiece;
+      newBoard[x][y] = 'wP';
+      newBoard[activePieceX][activePieceY] = '';
+      setActivePiece({});
+      setBoard(newBoard);
+    }
+  };
+
   function renderSquare({ x, y, piece }) {
-    return <Square backgroundColor={setSquareColor({ x, y })}>{renderPiece({ piece, x, y })}</Square>;
+    return (
+      <Square position={[x, y]} handleSquareClick={movePieceToPosibleMove({ x, y })}>
+        {renderPiece({ piece, x, y })}
+      </Square>
+    );
   }
 
   function renderPiece({ x, y, piece }) {
@@ -77,16 +91,10 @@ function MainBoard() {
       return <Pawn x={x} y={y} setActivePiece={handleSetActivePiece} color="white" board={board} />;
     }
     if (piece === 'X') {
-      return 'x';
+      return 'X';
     }
-    return piece;
-  }
 
-  function setSquareColor({ x, y }) {
-    if ((x + y) % 2) {
-      return '#0c352c';
-    }
-    return 'white';
+    return piece;
   }
 
   return initializeBoard();
