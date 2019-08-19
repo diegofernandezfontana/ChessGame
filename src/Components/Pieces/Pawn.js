@@ -27,16 +27,17 @@ function Pawn(props) {
     return posibleMoves;
   };
 
+  function renderPawnColor() {
+    if (color === 'white') {
+      return 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/1024px-Chess_plt45.svg.png';
+    }
+    return 'https://www.pinclipart.com/picdir/big/2-20427_chess-piece-pawn-queen-knight-black-pawn-chess.png';
+  }
+
   function renderIcon() {
     return (
       <button onClick={selectPiece}>
-        <img
-          x={x}
-          y={y}
-          height={50}
-          width={50}
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/1024px-Chess_plt45.svg.png"
-        />
+        <img x={x} y={y} height={10} width={10} src={renderPawnColor()} />
       </button>
     );
   }

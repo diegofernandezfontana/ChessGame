@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Square from '../../Components/Square';
 import { defaultPosition } from './intialPositions';
 import { Column } from './styles';
-import Pawn from '../../Components/Pieces/Pawn';
 
 function MainBoard() {
   const [board, setBoard] = useState(defaultPosition);
@@ -14,36 +13,7 @@ function MainBoard() {
       const posibleMoves = activePiece.availableMoves();
       renderPosibleMoves(posibleMoves);
     }
-  }, [board[activePiece.x], board[activePiece.y]]);
-
-  useEffect(() => {
-    if (Object.keys(activePiece).length) {
-      const posibleMoves = activePiece.availableMoves();
-      renderPosibleMoves(posibleMoves);
-    }
   }, [activePiece]);
-
-  function renderPosibleMoves(posibleMoves) {
-    const newBoard = Object.assign([], board);
-
-    const clearedBoard = clearPosibleMoves(newBoard);
-    posibleMoves.forEach(square => {
-      clearedBoard[square.x][square.y] = 'X';
-    });
-
-    setBoard(clearedBoard);
-  }
-
-  function clearPosibleMoves(boardToClearX) {
-    return board.map((row, rowIndex) => {
-      return row.map((column, columnIndex) => {
-        if (column === 'X') {
-          return '';
-        }
-        return column;
-      });
-    });
-  }
 
   const handleSetActivePiece = piece => {
     setActivePiece(piece);
@@ -65,37 +35,59 @@ function MainBoard() {
     });
   }
 
-  const movePieceToPosibleMove = ({ x, y }) => () => {
-    const canPieveMoveToThisSquare = board[x][y] === 'X';
+  function renderSquare({ x, y, piece }) {
+    return (
+      <Square
+        board={board}
+        piece={piece}
+        position={[x, y]}
+        handleSetActivePiece={handleSetActivePiece}
+        handleSquareClick={movePieceToPosibleMove({ x, y })}
+      />
+    );
+  }
+
+  function renderPosibleMoves(posibleMoves) {
     const clearedBoard = clearPosibleMoves();
     const newBoard = Object.assign([], clearedBoard);
+    posibleMoves.forEach(square => {
+      //posibleMoves -> [{x: 1, y: 2}, {x:2, y2}...]
+      if (Object.keys(newBoard[square.x][square.y]).length) {
+        const replacedObject = Object.assign({}, newBoard[square.x][square.y], { isTarget: true });
+        newBoard[square.x][square.y] = replacedObject;
+        console.log(newBoard[square.x][square.y], 'newBoard[square.x][square.y]');
+      } else {
+        newBoard[square.x][square.y] = 'X';
+      }
+    });
+
+    setBoard(newBoard);
+  }
+
+  function clearPosibleMoves() {
+    return board.map(row => {
+      return row.map(column => {
+        if (column === 'X') {
+          return '';
+        }
+        return column;
+      });
+    });
+  }
+
+  const movePieceToPosibleMove = ({ x, y }) => () => {
+    const canPieveMoveToThisSquare = board[x][y] === 'X';
     if (canPieveMoveToThisSquare) {
+      const clearedBoard = clearPosibleMoves();
+      const newBoard = Object.assign([], clearedBoard);
       const { x: activePieceX, y: activePieceY } = activePiece;
-      newBoard[x][y] = 'wP';
+      const whitePawn = { piece: 'pawn', color: 'white', label: 'wP', isTarget: false };
+      newBoard[x][y] = whitePawn;
       newBoard[activePieceX][activePieceY] = '';
       setActivePiece({});
       setBoard(newBoard);
     }
   };
-
-  function renderSquare({ x, y, piece }) {
-    return (
-      <Square position={[x, y]} handleSquareClick={movePieceToPosibleMove({ x, y })}>
-        {renderPiece({ piece, x, y })}
-      </Square>
-    );
-  }
-
-  function renderPiece({ x, y, piece }) {
-    if (piece === 'bP' || piece === 'wP') {
-      return <Pawn x={x} y={y} setActivePiece={handleSetActivePiece} color="white" board={board} />;
-    }
-    if (piece === 'X') {
-      return 'X';
-    }
-
-    return piece;
-  }
 
   return initializeBoard();
 }
