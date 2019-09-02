@@ -66,8 +66,13 @@ function MainBoard() {
   function clearPosibleMoves() {
     return board.map(row => {
       return row.map(column => {
+        console.log(column, 'columna ');
         if (column === 'X') {
           return '';
+        }
+        if (Object.keys(column).length && typeof column !== 'string') {
+          console.log(column, 'columna ');
+          column.isTarget = false;
         }
         return column;
       });
