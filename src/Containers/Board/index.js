@@ -55,7 +55,6 @@ function MainBoard() {
       if (Object.keys(newBoard[square.x][square.y]).length) {
         const replacedObject = Object.assign({}, newBoard[square.x][square.y], { isTarget: true });
         newBoard[square.x][square.y] = replacedObject;
-        console.log(newBoard[square.x][square.y], 'newBoard[square.x][square.y]');
       } else {
         newBoard[square.x][square.y] = 'X';
       }
@@ -75,14 +74,26 @@ function MainBoard() {
     });
   }
 
+  function isEnemyPieceInSquare({ squareSelectedX, squareSelectedY }) {
+    const doesSquareHavePiece = Object.keys(board[squareSelectedX][squareSelectedY]).length > 0;
+    if (activePiece && activePiece.color && doesSquareHavePiece) {
+      return activePiece.color !== board[squareSelectedX][squareSelectedY].color || false;
+    }
+    return false;
+  }
   const movePieceToPosibleMove = ({ x, y }) => () => {
-    const canPieveMoveToThisSquare = board[x][y] === 'X';
-    if (canPieveMoveToThisSquare) {
+    const isSquareEmpty = board[x][y] === 'X';
+    const isEnemyPiece = isEnemyPieceInSquare({ squareSelectedX: x, squareSelectedY: y });
+    if (isSquareEmpty || isEnemyPiece) {
       const clearedBoard = clearPosibleMoves();
       const newBoard = Object.assign([], clearedBoard);
       const { x: activePieceX, y: activePieceY } = activePiece;
-      const whitePawn = { piece: 'pawn', color: 'white', label: 'wP', isTarget: false };
-      newBoard[x][y] = whitePawn;
+
+      if (activePiece) {
+        const whitePawn = { piece: 'pawn', color: 'white', label: 'wP', isTarget: false };
+
+        newBoard[x][y] = whitePawn;
+      }
       newBoard[activePieceX][activePieceY] = '';
       setActivePiece({});
       setBoard(newBoard);

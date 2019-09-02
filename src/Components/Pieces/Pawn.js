@@ -36,9 +36,9 @@ function Pawn(props) {
 
   function renderIcon() {
     return (
-      <button onClick={selectPiece}>
-        <img x={x} y={y} height={10} width={10} src={renderPawnColor()} />
-      </button>
+      <div onClick={selectPiece}>
+        <img x={x} y={y} height={30} width={30} src={renderPawnColor()} />
+      </div>
     );
   }
 
