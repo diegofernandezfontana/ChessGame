@@ -76,7 +76,7 @@ function MainBoard() {
 
   function isEnemyPieceInSquare({ squareSelectedX, squareSelectedY }) {
     const doesSquareHavePiece = Object.keys(board[squareSelectedX][squareSelectedY]).length > 0;
-    if (activePiece && activePiece.color && doesSquareHavePiece) {
+    if (activePiece && activePiece.color && doesSquareHavePiece && board[squareSelectedX][squareSelectedY].isTarget) {
       return activePiece.color !== board[squareSelectedX][squareSelectedY].color || false;
     }
     return false;
@@ -84,6 +84,7 @@ function MainBoard() {
   const movePieceToPosibleMove = ({ x, y }) => () => {
     const isSquareEmpty = board[x][y] === 'X';
     const isEnemyPiece = isEnemyPieceInSquare({ squareSelectedX: x, squareSelectedY: y });
+
     if (isSquareEmpty || isEnemyPiece) {
       const clearedBoard = clearPosibleMoves();
       const newBoard = Object.assign([], clearedBoard);
