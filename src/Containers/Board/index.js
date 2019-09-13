@@ -52,9 +52,9 @@ function MainBoard() {
     const newBoard = Object.assign([], clearedBoard);
     posibleMoves.forEach(square => {
       if (Object.keys(newBoard[square.x][square.y]).length) {
-        const replacedObject = Object.assign({}, newBoard[square.x][square.y], { isTarget: true });
+        const targetedPiece = Object.assign({}, newBoard[square.x][square.y], { isTarget: true });
 
-        newBoard[square.x][square.y] = replacedObject;
+        newBoard[square.x][square.y] = targetedPiece;
       } else {
         newBoard[square.x][square.y] = 'X';
       }
@@ -88,20 +88,16 @@ function MainBoard() {
   const movePieceToPosibleMove = ({ x, y }) => () => {
     const isSquareEmpty = board[x][y] === 'X';
     const isEnemyPiece = isEnemyPieceInSquare({ squareSelectedX: x, squareSelectedY: y });
-    console.log('LLEGO ACA');
-    console.log(isSquareEmpty, isEnemyPiece, 'HAY PIEZXAS ENEMIGAS');
     const clearedBoard = clearPosibleMoves();
     const newBoard = Object.assign([], clearedBoard);
     if (isSquareEmpty || isEnemyPiece) {
-      const { x: activePieceX, y: activePieceY } = activePiece;
-
       if (activePiece) {
+        const { x: activePieceX, y: activePieceY } = activePiece;
         const { piece, color, label, isTarget } = activePiece;
-        const pieceToMove = { piece: piece, color: color, label: 'bP', isTarget: false };
+        const pieceToMove = { piece, color, label, isTarget: false };
         newBoard[x][y] = pieceToMove;
+        newBoard[activePieceX][activePieceY] = '';
       }
-      console.log(newBoard, 'new Board');
-      newBoard[activePieceX][activePieceY] = '';
       setActivePiece({});
       setBoard(newBoard);
     }

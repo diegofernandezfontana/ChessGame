@@ -18,7 +18,6 @@ function Square(props) {
   function renderPiece() {
     const { color, isTarget, label } = piece;
     if (piece.label === 'bP' || piece.label === 'wP') {
-      console.log(x, y, color, label);
       return <Pawn x={x} y={y} setActivePiece={handleSetActivePiece} color={color} board={board} label={label} />;
     }
     if (piece === 'X') {
