@@ -51,9 +51,9 @@ function MainBoard() {
     const clearedBoard = clearPosibleMoves();
     const newBoard = Object.assign([], clearedBoard);
     posibleMoves.forEach(square => {
-      //posibleMoves -> [{x: 1, y: 2}, {x:2, y2}...]
       if (Object.keys(newBoard[square.x][square.y]).length) {
         const replacedObject = Object.assign({}, newBoard[square.x][square.y], { isTarget: true });
+
         newBoard[square.x][square.y] = replacedObject;
       } else {
         newBoard[square.x][square.y] = 'X';
@@ -66,12 +66,10 @@ function MainBoard() {
   function clearPosibleMoves() {
     return board.map(row => {
       return row.map(column => {
-        console.log(column, 'columna ');
         if (column === 'X') {
           return '';
         }
         if (Object.keys(column).length && typeof column !== 'string') {
-          console.log(column, 'columna ');
           column.isTarget = false;
         }
         return column;
@@ -86,20 +84,23 @@ function MainBoard() {
     }
     return false;
   }
+
   const movePieceToPosibleMove = ({ x, y }) => () => {
     const isSquareEmpty = board[x][y] === 'X';
     const isEnemyPiece = isEnemyPieceInSquare({ squareSelectedX: x, squareSelectedY: y });
-
+    console.log('LLEGO ACA');
+    console.log(isSquareEmpty, isEnemyPiece, 'HAY PIEZXAS ENEMIGAS');
+    const clearedBoard = clearPosibleMoves();
+    const newBoard = Object.assign([], clearedBoard);
     if (isSquareEmpty || isEnemyPiece) {
-      const clearedBoard = clearPosibleMoves();
-      const newBoard = Object.assign([], clearedBoard);
       const { x: activePieceX, y: activePieceY } = activePiece;
 
       if (activePiece) {
-        const whitePawn = { piece: 'pawn', color: 'white', label: 'wP', isTarget: false };
-
-        newBoard[x][y] = whitePawn;
+        const { piece, color, label, isTarget } = activePiece;
+        const pieceToMove = { piece: piece, color: color, label: 'bP', isTarget: false };
+        newBoard[x][y] = pieceToMove;
       }
+      console.log(newBoard, 'new Board');
       newBoard[activePieceX][activePieceY] = '';
       setActivePiece({});
       setBoard(newBoard);
